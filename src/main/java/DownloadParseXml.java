@@ -1,4 +1,3 @@
-import module.VideoModule;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -17,10 +16,11 @@ import java.util.List;
 
 /**
  * Created by tanrong.ltr on 16/9/25.
+ * 下载xml文件并做相应的解析
  */
-public class XmlParse {
+public class DownloadParseXml {
 
-    public static List<VideoModule> getSchoolNews(String xmlUrl)
+    private static List<VideoModule> getSchoolNews(String xmlUrl)
             throws MalformedURLException, IOException, XmlPullParserException {
         String path =xmlUrl;
         HttpURLConnection con = (HttpURLConnection) new URL(path)
@@ -35,7 +35,7 @@ public class XmlParse {
         return null;
 
     }
-    public static String InputStreamTOString(InputStream in){
+    private static String InputStreamTOString(InputStream in){
 
         try {
 

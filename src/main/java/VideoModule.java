@@ -1,7 +1,6 @@
-package module;
-
 /**
  * Created by tanrong.ltr on 16/9/25.
+ * Video对应类 方便传输数据
  */
 public class VideoModule {
     private String videoName;

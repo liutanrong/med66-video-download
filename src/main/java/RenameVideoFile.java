@@ -1,7 +1,6 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import module.VideoModule;
 
 import java.io.*;
 import java.util.List;
@@ -9,19 +8,24 @@ import java.util.List;
 /**
  * Created by tanrong.ltr on 16/9/26.
  */
-public class Rename {
-    private static String videoDir="video/";
-    private static String oldVideoDir="G:\\下载\\视频\\sp\\";
+public class RenameVideoFile {
+    private static String TARGET_PATH_DIR ="video/";
+    private static String SOURCE_PATH_DIR="G:\\下载\\视频\\sp\\";
+
     public static void main(String[] args){
-        JSONArray jsonArray= JSON.parseArray(readFile("JSON/2016_10_41.json"));
+        String jsonFilePath="JSON/2016_10_41.json";
+
+        JSONArray jsonArray= JSON.parseArray(readFile(jsonFilePath));
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject object=jsonArray.getJSONObject(i);
             String lessonName=object.getString("lessonName");
             JSONArray videoArray=object.getJSONArray("videoModule");
             List<VideoModule> videoModuleList=JSON.parseArray(JSON.toJSONString(videoArray),VideoModule.class);
-            File file=new File(videoDir+lessonName);
+            File file=new File(TARGET_PATH_DIR +lessonName);
             if (!file.exists()){
-                file.mkdir();
+                if (!file.mkdir()){
+                    System.out.println("创建目录["+lessonName+"]失败");
+                }
             }
             for(VideoModule videoModule:videoModuleList){
                 String order=videoModule.getVideoOrder();
@@ -29,7 +33,7 @@ public class Rename {
                 String videoName=videoModule.getVideoName();
                 String downloadName=videoModule.getHDUrl();
                 downloadName=downloadName.substring(5);
-                renameFile(oldVideoDir+downloadName,videoDir+lessonName+"/"+order+"_"+title+"_"+videoName+".mp4");
+                renameFile(SOURCE_PATH_DIR+downloadName, TARGET_PATH_DIR +lessonName+"/"+order+"_"+title+"_"+videoName+".mp4");
             }
         }
     }
@@ -60,7 +64,7 @@ public class Rename {
             System.out.println("新文件名和旧文件名相同...");
         }
     }
-    public static String readFile(String path){
+    private static String readFile(String path){
         File file = new File(path);
         BufferedReader reader = null;
         try {

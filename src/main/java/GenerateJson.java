@@ -1,7 +1,5 @@
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import module.VideoModule;
-import org.omg.CORBA.portable.ValueInputStream;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.*;
@@ -13,18 +11,25 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * Created by tanrong.ltr on 16/9/25.
+ * 生成视频信息JSON,下载链接
  */
-public class Main {
+public class GenerateJson {
     private static String PUBLIC_URL="http://115.153.176.229";
+    private static String JSON_PATH="JSON/";
     public static void main(String[] args) {
+        File file=new File(JSON_PATH);
+        if (!file.exists()){
+            if (!file.mkdir()){
+                System.out.println("创建保存JSON目录失败");
+            }
+        }
 
-        Map<String, String> map2016 = VideoMap.getMap2016();
-        parseMap(map2016,"JSON/2016.json");
+        Map<String, String> map2016 = VideoXmlInfoMap.getMap2016();
+        parseMap(map2016,JSON_PATH+"2016.json",JSON_PATH+"downloadUrl");
+
     }
-    private static void parseMap(Map<String,String> map,String filePath){
-        StringBuilder stringBuilder=new StringBuilder("<html>\n");
+    private static void parseMap(Map<String,String> map,String jsonInfoPath,String downloadUrlPath){
         StringBuilder sb=new StringBuilder();
-        stringBuilder.append("<body>\n");
         Set<Map.Entry<String, String>> set2015 = map.entrySet();
         JSONArray jsonArray = new JSONArray();
         for (Map.Entry<String, String> set : set2015) {
@@ -33,15 +38,10 @@ public class Main {
             String xmlUrl = set.getValue();
             object.put("lessonName", lessonName);
             try {
-                List<VideoModule> videoList = XmlParse.getSchoolNews(xmlUrl);
+                List<VideoModule> videoList = DownloadParseXml.getSchoolNews(xmlUrl);
                 object.put("videoModule", videoList);
                 for (VideoModule videoModule:videoList){
-                    sb.append(PUBLIC_URL+ videoModule.getHDUrl());
-                    sb.append("\n");
-
-                    stringBuilder.append("<a href="+PUBLIC_URL+videoModule.getHDUrl()+">"+videoModule.getTitle()+"-"+videoModule.getVideoOrder()+"-"+videoModule.getVideoName());
-
-                    stringBuilder.append("</a>\n");
+                    sb.append(PUBLIC_URL).append(videoModule.getHDUrl()).append("\n");
                 }
 
             } catch (IOException e) {
@@ -52,14 +52,17 @@ public class Main {
             jsonArray.add(object);
         }
 
-        stringBuilder.append("</body>\n");
-        stringBuilder.append("</html>\n");
-        writeStrToFile(stringBuilder.toString(),"JSON/html.html");
-        writeStrToFile(sb.toString(),"JSON/downloadlink.txt");
-        writeStrToFile(JSON.toJSONString(jsonArray),filePath);
+        //将生产的json及下载链接写入文件
+        writeStrToFile(sb.toString(),downloadUrlPath);
+        writeStrToFile(JSON.toJSONString(jsonArray),jsonInfoPath);
     }
 
-    public static void writeStrToFile(String xml,String path) {
+    /**
+     * 将字符串写入文件
+     * @param xml
+     * @param path
+     */
+    private static void writeStrToFile(String xml,String path) {
         try {
             FileOutputStream fos = new FileOutputStream(new File(path));
             Writer os = new OutputStreamWriter(fos, "UTF-8");

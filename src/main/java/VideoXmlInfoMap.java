@@ -3,8 +3,9 @@ import java.util.Map;
 
 /**
  * Created by tanrong.ltr on 16/9/25.
+ * 此类写由抓包得来的各课程视频信息XML地址
  */
-public class VideoMap {
+public class VideoXmlInfoMap {
     private static Map<String,String> xmlMap2016=new HashMap<String, String>(){
         {
             put("药理学", "http://member.med66.com/newApi/classroom/course/getCourseDetail.shtm?platformSource=1&sid=1c40a6u2u7rcoo8v1kqnri0os6&cwID=m000000216a&time=2016-09-25%2021%3A58%3A00&username=qindongliang0625&appkey=a927a05d-02ca-43f5-946d-089120f18173&getType=2&version=3.4.4&random=-1092338852064116902&type=0&pkey=f5022cdf251f92de2928741ce1e745f1");
