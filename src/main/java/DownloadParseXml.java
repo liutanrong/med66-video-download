@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class DownloadParseXml {
 
-    private static List<VideoModule> getSchoolNews(String xmlUrl)
+    public static List<VideoModule> getSchoolNews(String xmlUrl)
             throws MalformedURLException, IOException, XmlPullParserException {
         String path =xmlUrl;
         HttpURLConnection con = (HttpURLConnection) new URL(path)
